@@ -30,17 +30,25 @@ const expressServer = app.listen(8080, () => {
 });
 const io = new IOServer(expressServer);
 const messages = [];
+const products = [];
 
 // app.use(express.static(__dirname + "/public"));
 
 io.on("connection", (socket) => {
   console.log(`New connection, socket ID: ${socket.id}`);
 
+  // Envío de mensajes
   socket.emit("server:message", messages);
-
   socket.on("client:message", (messageInfo) => {
     messages.push(messageInfo);
-
     io.emit("server:message", messages);
+  });
+
+  // Envio de productos
+  socket.emit("server:product", products);
+  socket.on("client:product", (product) => {
+    console.log(product);
+    products.push(product);
+    io.emit("server:product", products);
   });
 });

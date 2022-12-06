@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda Handlebars</title>
+    <title>E-commerse</title>
+    <script src="/socket.io/socket.io.js"></script>
     <style>
       table,
       th,
@@ -16,5 +17,89 @@
 </head>
 <body>
     {{{body}}}
+
+<script>
+const socket = io();
+const chatForm = document.getElementById("chatForm");
+const messageInput = document.getElementById("message");
+const emailInput = document.getElementById("email");
+const chatPool = document.getElementById("messageForm");
+
+const sendMsg = (messageInfo) => {
+  console.log("enviando mensaje");
+  socket.emit("client:message", messageInfo);
+}
+
+const renderChat = (chat) => { 
+    const html = chat.map ((msg) => {
+        return (`
+        
+        <p> <span>${msg.email} </span><span> ${msg.data}</span> <span> ${msg.message}</span>  </p>
+                
+        `);
+
+    });
+    chatPool.innerHTML = html.join("");
+}
+
+const submitHandlerChat = (e) => {
+    e.preventDefault();
+    const messageInfo = {
+        email: emailInput.value,
+        message: messageInput.value,
+        data : new Date().toLocaleString()
+    };
+    sendMsg(messageInfo);
+    messageInput.value = "";
+    emailInput.readOnly = true;
+}
+
+chatForm.addEventListener("submit", submitHandlerChat);
+
+socket.on("server:message",renderChat)
+
+
+const productForm = document.getElementById("productForm");
+const productName = document.getElementById("name");
+const productPrice = document.getElementById("price");
+const productThumbnail = document.getElementById("thumbnail");
+const productList = document.getElementById("productPool");
+
+
+const sendProduct = (producInfo) => {
+  socket.emit("client:product", producInfo);
+  console.log("Enviando producto", producInfo)
+};
+
+const renderProduct = (product) => {
+  const html = product.map((prod) => {
+    return `
+            <tr>
+            <td>${prod.title}</td>
+            <td>${prod.price}</td>
+            <td><img src="${prod.thumbnail}" alt="producto" width="50px"></td>
+            </tr>
+            `;
+  });
+
+  productList.innerHTML = html.join("");
+};
+
+const submitHandler = (e) => {
+  e.preventDefault();
+  const producInfo = {
+    title: productName.value,
+    price: productPrice.value,
+    thumbnail: productThumbnail.value,
+  };
+  sendProduct(producInfo);
+  productForm.reset();
+};
+
+productForm.addEventListener("submit", submitHandler);
+
+socket.on("server:product", renderProduct);
+</script>
+
 </body>
 </html>
