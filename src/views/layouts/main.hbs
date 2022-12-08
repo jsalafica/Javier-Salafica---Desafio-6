@@ -13,6 +13,17 @@
         border: 1px solid black;
         border-collapse: collapse;
       }
+      #emailChat{
+        color: blue;
+        font-weight: bold;
+      }
+      #dateChat{
+        color: brown;
+      }
+      #messageChat{
+        color: green;
+        font-style: italic;
+      }
     </style>
 </head>
 <body>
@@ -26,16 +37,13 @@ const emailInput = document.getElementById("email");
 const chatPool = document.getElementById("messageForm");
 
 const sendMsg = (messageInfo) => {
-  console.log("enviando mensaje");
   socket.emit("client:message", messageInfo);
 }
 
 const renderChat = (chat) => { 
     const html = chat.map ((msg) => {
         return (`
-        
-        <p> <span>${msg.email} </span><span> ${msg.data}</span> <span> ${msg.message}</span>  </p>
-                
+        <p> <span id="emailChat">${msg.email} </span><span id="dateChat"> [${msg.data}] </span> <span>:</span> <span id="messageChat"> ${msg.message}</span>  </p>
         `);
 
     });
@@ -47,7 +55,7 @@ const submitHandlerChat = (e) => {
     const messageInfo = {
         email: emailInput.value,
         message: messageInput.value,
-        data : new Date().toLocaleString()
+        date : new Date().toLocaleString()
     };
     sendMsg(messageInfo);
     messageInput.value = "";
@@ -68,7 +76,6 @@ const productList = document.getElementById("productPool");
 
 const sendProduct = (producInfo) => {
   socket.emit("client:product", producInfo);
-  console.log("Enviando producto", producInfo)
 };
 
 const renderProduct = (product) => {

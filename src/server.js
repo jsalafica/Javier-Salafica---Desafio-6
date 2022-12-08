@@ -4,6 +4,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { engine } from "express-handlebars";
 import routes from "./routes/index.js";
+import fs from "fs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -37,17 +38,20 @@ const products = [];
 io.on("connection", (socket) => {
   console.log(`New connection, socket ID: ${socket.id}`);
 
-  // Envío de mensajes
+  // Mensajes
   socket.emit("server:message", messages);
   socket.on("client:message", (messageInfo) => {
     messages.push(messageInfo);
     io.emit("server:message", messages);
+    fs.writeFileSync(
+      __dirname + "/chat/messages.txt",
+      JSON.stringify(messages)
+    );
   });
 
-  // Envio de productos
+  // Productos
   socket.emit("server:product", products);
   socket.on("client:product", (product) => {
-    console.log(product);
     products.push(product);
     io.emit("server:product", products);
   });
