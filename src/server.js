@@ -33,7 +33,7 @@ const io = new IOServer(expressServer);
 const messages = [];
 const products = [];
 
-// app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/public"));
 
 io.on("connection", (socket) => {
   console.log(`New connection, socket ID: ${socket.id}`);
