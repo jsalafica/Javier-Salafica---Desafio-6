@@ -13,7 +13,7 @@ const sendMsg = (messageInfo) => {
 const renderChat = (chat) => {
   const html = chat.map((msg) => {
     return `
-        <p> <span id="emailChat">${msg.email} </span><span id="dateChat"> [${msg.data}] </span> <span>:</span> <span id="messageChat"> ${msg.message}</span>  </p>
+        <p> <span id="emailChat">${msg.email} </span><span id="dateChat"> [${msg.date}] </span> <span>:</span> <span id="messageChat"> ${msg.message}</span>  </p>
         `;
   });
   chatPool.innerHTML = html.join("");
